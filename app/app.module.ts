@@ -8,6 +8,7 @@ import { DishService } from "./services/dish.service";
 import { ProcessHttpMsgService } from "./services/process-httpmsg.service";
 
 import { MenuComponent } from "./menu/menu.component";
+import { DishdetailComponent } from './dishdetail/dishdetail.component';
 
 import { baseURL } from './shared/baseurl';
 
@@ -25,7 +26,8 @@ import { baseURL } from './shared/baseurl';
     ],
     declarations: [
         AppComponent,
-        MenuComponent
+        MenuComponent,
+        DishdetailComponent
     ],
     providers: [
         DishService,
