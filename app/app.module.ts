@@ -5,12 +5,15 @@ import { NativeScriptUISideDrawerModule } from "nativescript-telerik-ui/sidedraw
 import { AppRoutingModule } from "./app.routing";
 import { AppComponent } from "./app.component";
 
-import { DishService } from "./services/dish.service";
-import { ProcessHttpMsgService } from "./services/process-httpmsg.service";
+import { DishService } from './services/dish.service';
+import { PromotionService } from './services/promotion.service';
+import { LeaderService } from './services/leader.service';
+import { ProcessHttpMsgService } from './services/process-httpmsg.service';
 
-import { MenuComponent } from "./menu/menu.component";
+import { MenuComponent } from './menu/menu.component';
 import { DishdetailComponent } from './dishdetail/dishdetail.component';
-import { DrawerComponent } from "./shared/drawer/drawer.component";
+import { DrawerComponent } from './shared/drawer/drawer.component';
+import { HomeComponent } from './home/home.component';
 
 import { baseURL } from './shared/baseurl';
 
@@ -30,11 +33,14 @@ import { baseURL } from './shared/baseurl';
     declarations: [
         AppComponent,
         DrawerComponent,
+        HomeComponent,
         MenuComponent,
         DishdetailComponent
     ],
     providers: [
         DishService,
+        PromotionService,
+        LeaderService,
         ProcessHttpMsgService,
         { provide: 'BaseURL', useValue: baseURL }
     ],
