@@ -1,18 +1,26 @@
 <ActionBar title="Menu" class="action-bar">
 </ActionBar>
 
-<ScrollView>
-  <ListView [items]="dishes" class="list-group" *ngIf="dishes">
-    <ng-template let-dish="item">
-      <StackLayout orientation="horizontal" class="list-group-item" [nsRouterLink]="['/dishdetail', dish.id]">
-        <Image row="0" col="0" rowSpan="2" height="108" width="108"  [src]="baseURL + dish.image" class="thumb p-16"></Image>
-        <GridLayout class="list-group-item" rows="auto *" columns="*">
-          <Label row="0" col="0" class="list-group-item-heading" [text]="dish.name"></Label>
-          <Label row="1" col="0" class="list-group-item-text" textWrap="true" [text]="dish.description"></Label>
-        </GridLayout>
+<RadSideDrawer #drawerComponent tkToggleNavButton showOverNavigation="false">
+    <ScrollView tkDrawerContent class="sidedrawer-left">
+      <StackLayout horizontalAlign="left">
+        <drawer-content></drawer-content>
       </StackLayout>
-    </ng-template>
-  </ListView>
-  <ActivityIndicator busy="true" *ngIf="!(dishes || errMess)" width="50" height="50" class="activity-indicator"></ActivityIndicator>
-  <Label *ngIf="errMess" textWrap="true" [text]="'Error: ' + errMess"></Label>
-</ScrollView>
+    </ScrollView>
+
+    <ScrollView tkMainContent>
+      <ListView [items]="dishes" class="list-group" *ngIf="dishes">
+        <ng-template let-dish="item">
+          <StackLayout orientation="horizontal" class="list-group-item" [nsRouterLink]="['/dishdetail', dish.id]">
+            <Image row="0" col="0" rowSpan="2" height="108" width="108"  [src]="baseURL + dish.image" class="thumb p-16"></Image>
+            <GridLayout class="list-group-item" rows="auto *" columns="*">
+              <Label row="0" col="0" class="list-group-item-heading" [text]="dish.name"></Label>
+              <Label row="1" col="0" class="list-group-item-text" textWrap="true" [text]="dish.description"></Label>
+            </GridLayout>
+          </StackLayout>
+        </ng-template>
+      </ListView>
+      <ActivityIndicator busy="true" *ngIf="!(dishes || errMess)" width="50" height="50" class="activity-indicator"></ActivityIndicator>
+      <Label *ngIf="errMess" textWrap="true" [text]="'Error: ' + errMess"></Label>
+    </ScrollView>
+</RadSideDrawer>
