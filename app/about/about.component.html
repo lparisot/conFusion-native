@@ -23,7 +23,7 @@
         <ListView height="600" [items]="leaders" class="list-group p-10" *ngIf="leaders">
           <ng-template let-leader="item">
             <StackLayout orientation="horizontal" class="list-group-item">
-              <Image row="0" col="0" rowSpan="2" height="88" width="88" [src]="baseURL + leader.image" class="thumb img-circle"></Image>
+              <Image row="0" col="0" height="88" width="88" [src]="baseURL + leader.image" class="thumb img-circle"></Image>
               <StackLayout>
                 <Label class="h2" [text]="leader.name"></Label>
                 <Label class="h3" [text]="leader.designation"></Label>
