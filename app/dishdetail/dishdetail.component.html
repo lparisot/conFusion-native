@@ -2,7 +2,7 @@
   <NavigationButton android.systemIcon="ic_menu_back" (tap)="goBack()"></NavigationButton>
 </ActionBar>
 
-<ScrollView orientation="vertical">
+<ScrollView orientation="vertical" class="page">
   <GridLayout class="m-5" rows="auto auto auto" *ngIf="dish">
     <StackLayout row="0" class="p-10 border">
       <Image [src]="baseURL + dish.image"></Image>
