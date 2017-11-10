@@ -14,6 +14,8 @@ import { MenuComponent } from './menu/menu.component';
 import { DishdetailComponent } from './dishdetail/dishdetail.component';
 import { DrawerComponent } from './shared/drawer/drawer.component';
 import { HomeComponent } from './home/home.component';
+import { ContactComponent } from './contact/contact.component';
+import { AboutComponent } from './about/about.component';
 
 import { baseURL } from './shared/baseurl';
 
@@ -34,8 +36,10 @@ import { baseURL } from './shared/baseurl';
         AppComponent,
         DrawerComponent,
         HomeComponent,
+        AboutComponent,
         MenuComponent,
-        DishdetailComponent
+        DishdetailComponent,
+        ContactComponent
     ],
     providers: [
         DishService,

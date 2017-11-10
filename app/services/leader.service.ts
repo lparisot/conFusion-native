@@ -16,7 +16,7 @@ export class LeaderService {
     console.log('Hello LeaderService service');
   }
 
-  getPromotions(): Observable<Leader[]> {
+  getLeaders(): Observable<Leader[]> {
     return this.http
       .get(this.baseURL + 'leaders')
       .map(res => { return this.processHTTPMsgService.extractData(res); })

@@ -21,6 +21,12 @@ refer to http://docs.nativescript.org/ui/theme.
   border-width:  0;
 }
 
+.circle {
+  border-width:  1;
+  border-color:  #9f9f9f;
+  border-radius: 60;
+}
+
 .sidedrawer-left {
   background-color: #D1C4E9;
 }
