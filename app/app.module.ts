@@ -9,6 +9,7 @@ import { AppComponent } from "./app.component";
 import { DishService } from './services/dish.service';
 import { PromotionService } from './services/promotion.service';
 import { LeaderService } from './services/leader.service';
+import { FavoriteService } from './services/favorite.service';
 import { ProcessHttpMsgService } from './services/process-httpmsg.service';
 
 import { MenuComponent } from './menu/menu.component';
@@ -47,6 +48,7 @@ import { baseURL } from './shared/baseurl';
         DishService,
         PromotionService,
         LeaderService,
+        FavoriteService,
         ProcessHttpMsgService,
         { provide: 'BaseURL', useValue: baseURL }
     ],
