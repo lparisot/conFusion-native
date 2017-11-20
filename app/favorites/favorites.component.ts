@@ -4,6 +4,8 @@ import { RadListViewComponent } from 'nativescript-telerik-ui/listview/angular';
 import { View } from 'ui/core/View';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { layout } from 'tns-core-modules/utils/utils';
+import { confirm } from 'ui/dialogs';
+import { Toasty } from 'nativescript-toasty';
 
 import { FavoriteService } from '../services/favorite.service';
 import { Dish } from '../shared/dish';
@@ -22,7 +24,7 @@ export class FavoritesComponent extends DrawerPage implements OnInit {
   @ViewChild('myListView') listViewComponent: RadListViewComponent;
 
   constructor(
-    private favoriteservice: FavoriteService,
+    private favoriteService: FavoriteService,
     private changeDetectorRef: ChangeDetectorRef,
     @Inject('BaseURL') private baseURL) { super(changeDetectorRef); }
 
@@ -30,17 +32,38 @@ export class FavoritesComponent extends DrawerPage implements OnInit {
     this.getFavorites();
   }
 
-  deleteFavorite(id: number) {
-    this.favoriteservice
-      .deleteFavorite(id)
-      .subscribe(
-        favorites => this.favorites = new ObservableArray(favorites),
-        errmess => this.errMess = errmess
-      );
+  deleteFavorite(dish: Dish) {
+    let options = {
+      title: 'Confirm Delete',
+      message: 'Do you want to delete dish ' + dish.name,
+      okButtonText: 'Yes',
+      cancelButtonText: 'No',
+      neutralButtonText: 'Cancel'
+    };
+
+    confirm(options).then((result: boolean) => {
+      if (result) {
+        this.favorites = null;
+
+        this.favoriteService
+          .deleteFavorite(dish.id)
+          .subscribe(
+            favorites => {
+              const toast = new Toasty("Deleted favorite dish " + dish.name, "short", "bottom");
+              toast.show();
+              this.favorites = new ObservableArray(favorites);
+            },
+            errmess => this.errMess = errmess
+          );
+      }
+      else {
+        console.log('Delete cancelled');
+      }
+    });
   }
 
   getFavorites() {
-    this.favoriteservice
+    this.favoriteService
       .getFavorites()
       .subscribe(
         favorites => this.favorites = new ObservableArray(favorites),
@@ -52,7 +75,7 @@ export class FavoritesComponent extends DrawerPage implements OnInit {
     console.log("Pull to refresh");
     setTimeout(() => {
       let listView = args.object;
-      this.favoriteservice
+      this.favoriteService
         .getFavorites()
         .subscribe(
           favorites => {
@@ -108,7 +131,7 @@ export class FavoritesComponent extends DrawerPage implements OnInit {
 
   public onRightSwipeClick(args: ListViewEventData) {
     console.log('Right swipe click');
-    this.deleteFavorite(args.object.bindingContext.id);
+    this.deleteFavorite(args.object.bindingContext);
     this.listViewComponent.listView.notifySwipeToExecuteFinished();
   }
 }
