@@ -23,6 +23,7 @@ import { ContactComponent } from './contact/contact.component';
 import { AboutComponent } from './about/about.component';
 import { FavoritesComponent } from './favorites/favorites.component';
 import { ReservationComponent } from './reservation/reservation.component';
+import { ReservationModalComponent } from "./reservationmodal/reservationmodal.component";
 
 import { baseURL } from './shared/baseurl';
 
@@ -52,8 +53,10 @@ import { baseURL } from './shared/baseurl';
         DishdetailComponent,
         ContactComponent,
         FavoritesComponent,
-        ReservationComponent
+        ReservationComponent,
+        ReservationModalComponent
     ],
+    entryComponents: [ReservationModalComponent],
     providers: [
         DishService,
         PromotionService,

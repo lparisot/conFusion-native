@@ -1,9 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Inject, ViewContainerRef } from '@angular/core';
 import { TextField } from 'ui/text-field';
 import { Switch } from 'ui/switch';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { ModalDialogService, ModalDialogOptions } from "nativescript-angular/modal-dialog";
 
 import { DrawerPage } from '../shared/drawer/drawer.page';
+import { ReservationModalComponent } from "../reservationmodal/reservationmodal.component";
 
 @Component({
   selector: 'app-reservation',
@@ -15,7 +17,9 @@ export class ReservationComponent extends DrawerPage implements OnInit {
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private modalService: ModalDialogService,
+    private vcRef: ViewContainerRef
   ) {
     super(changeDetectorRef);
 
@@ -27,6 +31,25 @@ export class ReservationComponent extends DrawerPage implements OnInit {
   }
 
   ngOnInit() { }
+
+  createModalView(args) {
+    let options: ModalDialogOptions = {
+      viewContainerRef: this.vcRef,
+      context: args,
+      fullscreen: false
+    };
+
+    this.modalService
+      .showModal(ReservationModalComponent, options)
+      .then((result: any) => {
+        if (args === "guest") {
+          this.reservation.patchValue({ guests: result });
+        }
+        else if (args === "date-time") {
+          this.reservation.patchValue({ dateTime: result });
+        }
+      });
+    }
 
   onSmokingChecked(args) {
     let smokingSwitch = <Switch>args.object;
@@ -41,13 +64,13 @@ export class ReservationComponent extends DrawerPage implements OnInit {
   onGuestChange(args) {
     let textField = <TextField>args.object;
 
-    this.reservation.patchValue({ guests: textField.text});
+    this.reservation.patchValue({ guests: textField.text });
   }
 
   onDateTimeChange(args) {
     let textField = <TextField>args.object;
 
-    this.reservation.patchValue({ dateTime: textField.text});
+    this.reservation.patchValue({ dateTime: textField.text });
   }
 
   onSubmit() {
