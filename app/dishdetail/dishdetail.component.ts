@@ -71,19 +71,20 @@ export class DishdetailComponent implements OnInit {
   }
 
   openDialog() {
+    const actionMenu = {
+      'Add to Favorites': () => this.addToFavorites(),
+      'Add Comment':      () => this.addAComment()
+    };
+
     let options = {
       title: 'Actions',
       cancelButtonText: 'Cancel',
-      actions: ['Add to Favorites', 'Add Comment']
+      actions: Object.keys(actionMenu)
     };
 
     action(options).then(result => {
-      if (result === 'Add to Favorites') {
-        this.addToFavorites();
-      }
-      else if (result === 'Add Comment'){
-        this.addAComment();
-      }
+      let action = actionMenu[result];
+      if (action) action();
     });
   }
 
@@ -102,5 +103,5 @@ export class DishdetailComponent implements OnInit {
           this.updateStats();
         }
       });
-    }
+  }
 }
