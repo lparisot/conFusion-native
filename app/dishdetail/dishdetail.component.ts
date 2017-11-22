@@ -1,14 +1,17 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewContainerRef } from '@angular/core';
 import { ActivatedRoute, Params } from '@angular/router';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { TNSFontIconModule } from "nativescript-ngx-fonticon";
 import { Toasty } from 'nativescript-toasty';
 import 'rxjs/add/operator/switchMap';
+import { action } from 'ui/dialogs';
+import { ModalDialogService, ModalDialogOptions } from "nativescript-angular/modal-dialog";
 
 import { Dish } from '../shared/dish';
 import { Comment } from '../shared/comment';
 import { DishService } from '../services/dish.service';
 import { FavoriteService } from '../services/favorite.service';
+import { CommentModalComponent } from "../comment/comment.component";
 
 @Component({
   selector: 'app-dishdetail',
@@ -18,7 +21,6 @@ import { FavoriteService } from '../services/favorite.service';
 })
 export class DishdetailComponent implements OnInit {
   dish: Dish;
-  comment: Comment;
   errMess: string;
   avgStars: string;
   numComments: number;
@@ -30,6 +32,8 @@ export class DishdetailComponent implements OnInit {
     private route: ActivatedRoute,
     private routerExtensions: RouterExtensions,
     private fonticon: TNSFontIconModule,
+    private modalService: ModalDialogService,
+    private vcRef: ViewContainerRef,
     @Inject('BaseURL') private baseURL) { }
 
   ngOnInit() {
@@ -39,14 +43,18 @@ export class DishdetailComponent implements OnInit {
         dish => {
           this.dish = dish;
           this.favorite = this.favoriteService.isFavorite(this.dish.id);
-          this.numComments = this.dish.comments.length;
-
-          let total = 0;
-          this.dish.comments.forEach(comment => total += comment.rating);
-          this.avgStars = (total / this.numComments).toFixed(2);
+          this.updateStats();
         },
         errmess => { this.dish = null; this.errMess = <any>errmess; }
       );
+  }
+
+  updateStats() {
+    this.numComments = this.dish.comments.length;
+
+    let total = 0;
+    this.dish.comments.forEach(comment => total += comment.rating);
+    this.avgStars = (total / this.numComments).toFixed(2);
   }
 
   goBack(): void {
@@ -61,4 +69,38 @@ export class DishdetailComponent implements OnInit {
       toast.show();
     }
   }
+
+  openDialog() {
+    let options = {
+      title: 'Actions',
+      cancelButtonText: 'Cancel',
+      actions: ['Add to Favorites', 'Add Comment']
+    };
+
+    action(options).then(result => {
+      if (result === 'Add to Favorites') {
+        this.addToFavorites();
+      }
+      else if (result === 'Add Comment'){
+        this.addAComment();
+      }
+    });
+  }
+
+  addAComment() {
+    let options: ModalDialogOptions = {
+      viewContainerRef: this.vcRef,
+      fullscreen: false
+    };
+
+    this.modalService
+      .showModal(CommentModalComponent, options)
+      .then((comment: Comment) => {
+        if (comment != null) {
+          this.dish.comments.push(comment);
+
+          this.updateStats();
+        }
+      });
+    }
 }
