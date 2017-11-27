@@ -14,6 +14,7 @@ import { PromotionService } from './services/promotion.service';
 import { LeaderService } from './services/leader.service';
 import { FavoriteService } from './services/favorite.service';
 import { ProcessHttpMsgService } from './services/process-httpmsg.service';
+import { CouchbaseService } from './services/couchbase.service';
 
 import { MenuComponent } from './menu/menu.component';
 import { DishdetailComponent } from './dishdetail/dishdetail.component';
@@ -65,6 +66,7 @@ import { baseURL } from './shared/baseurl';
         LeaderService,
         FavoriteService,
         ProcessHttpMsgService,
+        CouchbaseService,
         { provide: 'BaseURL', useValue: baseURL }
     ],
     schemas: [
