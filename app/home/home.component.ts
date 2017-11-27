@@ -26,13 +26,10 @@ export class HomeComponent extends DrawerPage implements OnInit {
   dishErrMess: string;
   promoErrMess: string;
   leaderErrMess: string;
-  
-  showLeftCard: boolean = true;
-  showMiddleCard: boolean = false;
-  showRightCard: boolean = false;
-  leftCard: View;
-  middleCard: View;
-  rightCard: View;
+
+  showCard = 0;
+  numberOfCards = 3;
+  cards: View[] = [];
   translation: number = 2000;
   duration: number = 500;
 
@@ -43,7 +40,8 @@ export class HomeComponent extends DrawerPage implements OnInit {
     private changeDetectorRef: ChangeDetectorRef,
     private page: Page,
     private fonticon: TNSFontIconService,
-    @Inject('BaseURL') private baseURL) {
+    @Inject('BaseURL') private baseURL
+  ) {
       super(changeDetectorRef);
   }
 
@@ -74,157 +72,44 @@ export class HomeComponent extends DrawerPage implements OnInit {
     console.log("Swipe Direction: " + args.direction);
 
     if (args.direction === SwipeDirection.left) {
-      this.animateLeft();
+      this.animate(1);
     }
     else if (args.direction === SwipeDirection.right) {
-      this.animateRight();
+      this.animate(-1);
     }
   }
 
- animateLeft() {
-   if (this.dish && this.promotion && this.leader) {
-     this.leftCard = this.page.getViewById<View>('leftCard');
-     this.middleCard  = this.page.getViewById<View>('middleCard');
-     this.rightCard  = this.page.getViewById<View>('rightCard');
+  animate(inversion: number) {
+    if (this.dish && this.promotion && this.leader) {
+      this.cards[0] = this.page.getViewById<View>('leftCard');
+      this.cards[1] = this.page.getViewById<View>('middleCard');
+      this.cards[2] = this.page.getViewById<View>('rightCard');
 
-     if( this.showLeftCard ) {
-       this.rightCard.animate({
-         translate: { x: this.translation, y: 0 }
-       })
-       .then(() => {
-         this.leftCard.animate({
-           translate: { x: -this.translation, y: 0 },
-           duration: this.duration,
-           curve: enums.AnimationCurve.easeInOut
-         })
-         .then(() => {
-           this.showLeftCard = false;
-           this.showMiddleCard = true;
-           this.middleCard.animate({
-             translate: { x: 0, y: 0 },
-             duration: this.duration,
-             curve: enums.AnimationCurve.easeInOut
-           });
-         });
-       });
-     }
-     else if( this.showMiddleCard ) {
-       this.leftCard.animate({
-         translate: { x: this.translation, y: 0 },
-         duration: this.duration
-       })
-       .then(() => {
-         this.middleCard.animate({
-           translate: { x: -this.translation, y: 0 },
-           duration: this.duration,
-           curve: enums.AnimationCurve.easeInOut
-         })
-         .then(() => {
-           this.showMiddleCard = false;
-           this.showRightCard = true;
-           this.rightCard.animate({
-             translate: { x: 0, y: 0 },
-             duration: this.duration,
-             curve: enums.AnimationCurve.easeInOut
-           });
-         });
-       });
-     }
-     else if( this.showRightCard ) {
-       this.middleCard.animate({
-         translate: { x: this.translation, y: 0 },
-         duration: this.duration
-       })
-       .then(() => {
-         this.rightCard.animate({
-           translate: { x: -this.translation, y: 0 },
-           duration: this.duration,
-           curve: enums.AnimationCurve.easeInOut
-         })
-         .then(() => {
-           this.showRightCard = false;
-           this.showLeftCard = true;
-           this.leftCard.animate({
-             translate: { x: 0, y: 0 },
-             duration: this.duration
-           });
-         });
-       });
-     }
-   }
- }
+      const leftCard = (this.showCard - inversion + this.numberOfCards) % this.numberOfCards;
+      const currentCard = this.showCard;
+      const rightCard = (this.showCard + inversion + this.numberOfCards) % this.numberOfCards;
 
- animateRight() {
-   if (this.dish && this.promotion && this.leader) {
-     this.leftCard = this.page.getViewById<View>('leftCard');
-     this.middleCard  = this.page.getViewById<View>('middleCard');
-     this.rightCard  = this.page.getViewById<View>('rightCard');
+      //console.log('leftCard :' + leftCard + ' currentCard: ' + currentCard + ' rightCard: ' + rightCard);
+      //console.log(this.cards[leftCard], this.cards[currentCard], this.cards[rightCard]);
 
-     if( this.showLeftCard ) {
-       this.middleCard.animate({
-         translate: { x: -this.translation, y: 0 },
-         duration: this.duration
-       })
-       .then(() => {
-         this.leftCard.animate({
-           translate: { x: this.translation, y: 0 },
-           duration: this.duration,
-           curve: enums.AnimationCurve.easeInOut
-         })
-         .then(() => {
-           this.showLeftCard = false;
-           this.showRightCard = true;
-           this.rightCard.animate({
-             translate: { x: 0, y: 0 },
-             duration: this.duration,
-             curve: enums.AnimationCurve.easeInOut
-           });
-         });
-       });
-     }
-     else if( this.showMiddleCard ) {
-       this.rightCard.animate({
-         translate: { x: -this.translation, y: 0 },
-         duration: this.duration
-       })
-       .then(() => {
-         this.middleCard.animate({
-           translate: { x: this.translation, y: 0 },
-           duration: this.duration,
-           curve: enums.AnimationCurve.easeInOut
-         })
-         .then(() => {
-           this.showMiddleCard = false;
-           this.showLeftCard = true;
-           this.leftCard.animate({
-             translate: { x: 0, y: 0 },
-             duration: this.duration,
-             curve: enums.AnimationCurve.easeInOut
-           });
-         });
-       });
-     }
-     else if( this.showRightCard ) {
-       this.leftCard.animate({
-         translate: { x: -this.translation, y: 0 },
-         duration: this.duration
-       })
-       .then(() => {
-         this.rightCard.animate({
-           translate: { x: this.translation, y: 0 },
-           duration: this.duration,
-           curve: enums.AnimationCurve.easeInOut
-         })
-         .then(() => {
-           this.showRightCard = false;
-           this.showMiddleCard = true;
-           this.middleCard.animate({
-             translate: { x: 0, y: 0 },
-             duration: this.duration
-           });
-         });
-       });
-     }
-   }
- }
+      this.cards[leftCard].animate({
+        translate: { x: inversion * this.translation, y: 0 }
+      })
+      .then(() => {
+        this.cards[currentCard].animate({
+          translate: { x: inversion * -this.translation, y: 0 },
+          duration: this.duration,
+          curve: enums.AnimationCurve.easeInOut
+        })
+        .then(() => {
+          this.showCard = rightCard;
+          this.cards[rightCard].animate({
+            translate: { x: 0, y: 0 },
+            duration: this.duration,
+            curve: enums.AnimationCurve.easeInOut
+          });
+        });
+      });
+    }
+  }
 }
