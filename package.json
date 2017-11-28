@@ -5,11 +5,11 @@
 	"repository": "https://github.com/lparisot/conFusion-native",
 	"nativescript": {
 		"id": "org.nativescript.conFusion",
-		"tns-ios": {
-			"version": "3.3.0"
-		},
 		"tns-android": {
 			"version": "3.3.1"
+		},
+		"tns-ios": {
+			"version": "3.3.0"
 		}
 	},
 	"dependencies": {
