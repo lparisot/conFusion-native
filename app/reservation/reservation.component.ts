@@ -10,6 +10,7 @@ import { Couchbase } from 'nativescript-couchbase';
 
 import { DrawerPage } from '../shared/drawer/drawer.page';
 import { ReservationModalComponent } from "../reservationmodal/reservationmodal.component";
+import { CouchbaseService } from "../services/couchbase.service";
 
 @Component({
   selector: 'app-reservation',
@@ -20,7 +21,6 @@ export class ReservationComponent extends DrawerPage implements OnInit {
   reservation: FormGroup;
   form: boolean = true;
   view: View;
-  database: Couchbase;
   docId: string = "reservations";
 
   constructor(
@@ -28,6 +28,7 @@ export class ReservationComponent extends DrawerPage implements OnInit {
     private formBuilder: FormBuilder,
     private modalService: ModalDialogService,
     private page: Page,
+    private couchbaseService: CouchbaseService,
     private vcRef: ViewContainerRef
   ) {
     super(changeDetectorRef);
@@ -37,8 +38,6 @@ export class ReservationComponent extends DrawerPage implements OnInit {
       smoking: false,
       dateTime: ['', Validators.required]
     });
-
-    this.database = new Couchbase("confusion");
   }
 
   ngOnInit() {
@@ -110,21 +109,21 @@ export class ReservationComponent extends DrawerPage implements OnInit {
     //this.database.deleteDocument(this.docId);
     console.log("new reservation:" + JSON.stringify(newReservation));
 
-    let reservations = [];
-    let document = this.database.getDocument(this.docId);
+    let reservations: Array<any> = [];
+    let document = this.couchbaseService.getDocument(this.docId);
     console.log("old document:" + JSON.stringify(document));
 
     if( document == null) {
       console.log("This is the first reservation");
       reservations.push(newReservation);
-      this.database.createDocument({ "reservations": reservations }, this.docId);
+      this.couchbaseService.createDocument({ "reservations": reservations }, this.docId);
     }
     else {
       reservations = document.reservations;
       reservations.push(newReservation);
-      this.database.updateDocument(this.docId,  { "reservations": reservations });
+      this.couchbaseService.updateDocument(this.docId,  { "reservations": reservations });
     }
-    document = this.database.getDocument(this.docId);
+    document = this.couchbaseService.getDocument(this.docId);
     console.log("new document:" + JSON.stringify(document));
   }
 }
