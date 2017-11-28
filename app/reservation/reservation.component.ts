@@ -1,8 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef, Inject, ViewContainerRef } from '@angular/core';
+import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import { Page } from "ui/page";
+import { View } from "ui/core/view";
 import { TextField } from 'ui/text-field';
 import { Switch } from 'ui/switch';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
+import * as enums from "ui/enums";
 import { ModalDialogService, ModalDialogOptions } from "nativescript-angular/modal-dialog";
+import { Couchbase } from 'nativescript-couchbase';
 
 import { DrawerPage } from '../shared/drawer/drawer.page';
 import { ReservationModalComponent } from "../reservationmodal/reservationmodal.component";
@@ -14,11 +18,16 @@ import { ReservationModalComponent } from "../reservationmodal/reservationmodal.
 })
 export class ReservationComponent extends DrawerPage implements OnInit {
   reservation: FormGroup;
+  form: boolean = true;
+  view: View;
+  database: Couchbase;
+  docId: string = "reservations";
 
   constructor(
     private changeDetectorRef: ChangeDetectorRef,
     private formBuilder: FormBuilder,
     private modalService: ModalDialogService,
+    private page: Page,
     private vcRef: ViewContainerRef
   ) {
     super(changeDetectorRef);
@@ -28,12 +37,16 @@ export class ReservationComponent extends DrawerPage implements OnInit {
       smoking: false,
       dateTime: ['', Validators.required]
     });
+
+    this.database = new Couchbase("confusion");
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.form = true;
+  }
 
   createModalView(args) {
-    let options: ModalDialogOptions = {
+    const options: ModalDialogOptions = {
       viewContainerRef: this.vcRef,
       context: args,
       fullscreen: false
@@ -74,6 +87,44 @@ export class ReservationComponent extends DrawerPage implements OnInit {
   }
 
   onSubmit() {
-    console.log(JSON.stringify(this.reservation.value));
+    const view = <View>this.page.getViewById<View>("view");
+    const duration = 500;
+
+    view.animate({
+      scale: { x: 0, y: 0 },
+      opacity: 0,
+      curve: enums.AnimationCurve.easeIn,
+      duration: duration
+    }).then(() => {
+      this.form = false;
+      view.animate({
+        scale: { x: 1, y: 1 },
+        opacity: 1,
+        curve: enums.AnimationCurve.easeOut,
+        duration: duration
+      }).then(() => this.save(this.reservation.value));
+    });
+  }
+
+  save(newReservation) {
+    //this.database.deleteDocument(this.docId);
+    console.log("new reservation:" + JSON.stringify(newReservation));
+
+    let reservations = [];
+    let document = this.database.getDocument(this.docId);
+    console.log("old document:" + JSON.stringify(document));
+
+    if( document == null) {
+      console.log("This is the first reservation");
+      reservations.push(newReservation);
+      this.database.createDocument({ "reservations": reservations }, this.docId);
+    }
+    else {
+      reservations = document.reservations;
+      reservations.push(newReservation);
+      this.database.updateDocument(this.docId,  { "reservations": reservations });
+    }
+    document = this.database.getDocument(this.docId);
+    console.log("new document:" + JSON.stringify(document));
   }
 }
