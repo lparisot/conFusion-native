@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
+import * as LocalNotifications from 'nativescript-local-notifications';
 
 import { Dish } from '../shared/dish';
 import { DishService } from '../services/dish.service';
@@ -24,6 +25,12 @@ export class FavoriteService {
     else {
       this.favorites = doc.favorites;
     }
+
+    LocalNotifications.hasPermission().then(
+        function(granted) {
+          console.log("Local notifications permission granted? " + (granted ? 'YES' : 'NO'));
+        }
+    );
   }
 
   isFavorite(id: number): boolean {
@@ -36,19 +43,35 @@ export class FavoriteService {
       .map(dishes => dishes.filter(dish => this.favorites.some(el => el === dish.id)));
   }
 
-  addFavorite(id: number): boolean {
-    if (!this.isFavorite(id)) {
-      this.favorites.push(id);
+  addFavorite(dish: Dish): boolean {
+    if (!this.isFavorite(dish.id)) {
+      this.favorites.push(dish.id);
       this.couchbaseService.updateDocument(this.docId, { "favorites": this.favorites });
+      LocalNotifications.schedule([{
+        id: dish.id,
+        title: "Confusion favorites",
+        body: 'Dish ' + dish.name + ' added successfully to favorites'
+      }]).then(
+        () => console.log('Notification scheduled'),
+        (error) => console.log('Error showing notification ' + error)
+      );
     }
     return true;
   }
 
-  deleteFavorite(id: number): Observable<Dish[]> {
-    let index = this.favorites.indexOf(id);
+  deleteFavorite(dish: Dish): Observable<Dish[]> {
+    let index = this.favorites.indexOf(dish.id);
     if (index >= 0) {
       this.favorites.splice(index, 1);
       this.couchbaseService.updateDocument(this.docId, { "favorites": this.favorites });
+      LocalNotifications.schedule([{
+        id: dish.id,
+        title: "Confusion favorites",
+        body: 'Dish ' + dish.name + ' removed successfully from favorites'
+      }]).then(
+        () => console.log('Notification scheduled'),
+        (error) => console.log('Error showing notification ' + error)
+      );
       return this.getFavorites();
     }
     else {

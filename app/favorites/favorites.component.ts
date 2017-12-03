@@ -46,7 +46,7 @@ export class FavoritesComponent extends DrawerPage implements OnInit {
         this.favorites = null;
 
         this.favoriteService
-          .deleteFavorite(dish.id)
+          .deleteFavorite(dish)
           .subscribe(
             favorites => {
               const toast = new Toasty("Deleted favorite dish " + dish.name, "short", "bottom");

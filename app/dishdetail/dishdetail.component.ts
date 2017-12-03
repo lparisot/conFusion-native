@@ -76,7 +76,7 @@ export class DishdetailComponent implements OnInit {
   addToFavorites() {
     if (!this.favorite) {
       console.log('Adding to favorites', this.dish.name);
-      this.favorite = this.favoriteService.addFavorite(this.dish.id);
+      this.favorite = this.favoriteService.addFavorite(this.dish);
       const toast = new Toasty("Added dish " + this.dish.name + " to favorites", "short", "bottom");
       toast.show();
     }
