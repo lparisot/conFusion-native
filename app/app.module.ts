@@ -26,6 +26,7 @@ import { FavoritesComponent } from './favorites/favorites.component';
 import { ReservationComponent } from './reservation/reservation.component';
 import { ReservationModalComponent } from "./reservationmodal/reservationmodal.component";
 import { CommentModalComponent } from './comment/comment.component';
+import { UserAuthComponent } from "./userauth/userauth.component";
 
 import { baseURL } from './shared/baseurl';
 
@@ -57,7 +58,8 @@ import { baseURL } from './shared/baseurl';
         FavoritesComponent,
         ReservationComponent,
         ReservationModalComponent,
-        CommentModalComponent
+        CommentModalComponent,
+        UserAuthComponent
     ],
     entryComponents: [ReservationModalComponent, CommentModalComponent],
     providers: [
