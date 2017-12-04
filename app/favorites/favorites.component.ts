@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { ListViewEventData, RadListView } from 'nativescript-telerik-ui/listview';
-import { RadListViewComponent } from 'nativescript-telerik-ui/listview/angular';
+import { ListViewEventData, RadListView } from 'nativescript-pro-ui/listview';
+import { RadListViewComponent } from 'nativescript-pro-ui/listview/angular';
 import { View } from 'ui/core/View';
 import { ObservableArray } from 'tns-core-modules/data/observable-array';
 import { layout } from 'tns-core-modules/utils/utils';

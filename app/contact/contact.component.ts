@@ -1,6 +1,7 @@
 import { Component, ChangeDetectorRef } from '@angular/core';
 import { TNSFontIconService } from 'nativescript-ngx-fonticon';
 import * as Email from 'nativescript-email';
+import * as Phone from 'nativescript-phone';
 
 import { DrawerPage } from '../shared/drawer/drawer.page';
 
@@ -40,5 +41,9 @@ Email: confusion@food.net";
           console.log('No Email configured');
         }
       });
+  }
+
+  callRestaurant() {
+    console.log('Phone: ' + Phone.dial('+85212345678', true));
   }
 }

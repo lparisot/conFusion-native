@@ -4,6 +4,7 @@ import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { getString, setString } from 'application-settings';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as camera from 'nativescript-camera';
+import * as imagepicker from 'nativescript-imagepicker';
 import { Image } from 'ui/image';
 
 @Component({
@@ -55,6 +56,24 @@ export class UserAuthComponent implements OnInit {
     else {
       console.log('Camera is not available');
     }
+  }
+
+  getFromLibrary() {
+    let context = imagepicker.create({
+      mode: 'single'
+    });
+    let image = <Image>this.page.getViewById<Image>('myPicture');
+
+    context
+      .authorize()
+      .then(() => context.present())
+      .then((selection) => {
+        selection.forEach((selected) => {
+          selected.getImage({maxWidth: 100, maxHeight: 100, aspectRatio: 'fill'})
+            .then((imageSource) => image.src = imageSource);
+        });
+      })
+      .catch((error) => console.log('Get picture error: ' + error));
   }
 
   register() {
